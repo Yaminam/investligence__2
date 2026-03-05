@@ -1,4 +1,4 @@
-﻿# InvestLigence
+# InvestLigence
 
 AI-Powered Deal Flow Intelligence Platform for investors and fundraising platform for founders — built with React 19, TypeScript, and Tailwind CSS.
 
