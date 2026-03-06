@@ -19,6 +19,11 @@ import {
   ClipboardList,
   LayoutDashboard,
   Upload,
+  DollarSign,
+  AlertTriangle,
+  Target,
+  Globe,
+  Star,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { Toaster } from "../components/ui/sonner";
@@ -28,6 +33,7 @@ import { ThemeToggle } from "../components/ThemeToggle";
 import { NotificationCenter } from "../components/NotificationCenter";
 import { useNotification } from "../context/NotificationContext";
 import { Badge } from "../components/ui/badge";
+import { investorTypeConfigs, investorTypeDashboardItems } from "../lib/investorTypes";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -71,7 +77,37 @@ export function DashboardLayout() {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   const isFounder = user?.role === "founder";
-  const navigation = isFounder ? founderNavigation : investorNavigation;
+  
+  // Icon mapping for investor type dashboard items
+  const getIconComponent = (iconName: string) => {
+    const iconMap: Record<string, any> = {
+      Sparkles, TrendingUp, BarChart3, Users, BriefcaseBusiness, Settings,
+      Home, Zap, Bot, GitMerge, Upload, Menu, DollarSign, AlertTriangle,
+      Target, Globe, Star, ClipboardList, LayoutDashboard,
+    };
+    return iconMap[iconName] || Home;
+  };
+  
+  // Get navigation based on investor type or default for founders
+  let navigation: Array<{ name: string; href: string; icon: typeof Home }> = [];
+  
+  if (isFounder) {
+    navigation = founderNavigation;
+  } else if (user?.investorType && investorTypeDashboardItems[user.investorType]) {
+    // Use investor type specific navigation
+    const typeNav = investorTypeDashboardItems[user.investorType];
+    navigation = typeNav.map((item) => ({
+      name: item.label,
+      href: item.route,
+      icon: getIconComponent(item.icon),
+    }));
+    // Always add settings at the end if not present
+    if (!navigation.find(n => n.name.toLowerCase() === 'settings')) {
+      navigation.push({ name: 'Settings', href: '/dashboard/settings', icon: Settings });
+    }
+  } else {
+    navigation = investorNavigation;
+  }
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -115,7 +151,15 @@ export function DashboardLayout() {
         >
           {isFounder ? "Founder" : "Investor"}
         </Badge>
-        {!isFounder && (
+        {!isFounder && user?.investorType && investorTypeConfigs[user.investorType] && (
+          <Badge 
+            className={`text-xs px-2.5 py-1 ${investorTypeConfigs[user.investorType].badge}`}
+            variant="secondary"
+          >
+            {investorTypeConfigs[user.investorType].label}
+          </Badge>
+        )}
+        {!isFounder && !user?.investorType && (
           <Badge className="text-xs px-2.5 py-1 bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" variant="secondary">
             VIP Access
           </Badge>

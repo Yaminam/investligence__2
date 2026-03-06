@@ -1,4 +1,8 @@
-﻿import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
+﻿import {
+  AngelDashboard, VCDashboard, BankDashboard, NBFCDashboard,
+  FamilyOfficeDashboard, CVCDashboard, IdeaFounderDashboard,
+} from "./InvestorTypeDashboards";
+import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -550,8 +554,19 @@ function FounderDashboard() {
 
 export function DashboardHome() {
   const { user } = useAuth();
-  if (user?.role === "founder") return <FounderDashboard />;
-  return <InvestorDashboard />;
+  if (user?.role === "founder") {
+    if (user?.onboardingData?.founderType === "idea") return <IdeaFounderDashboard />;
+    return <FounderDashboard />;
+  }
+  switch (user?.investorType) {
+    case "angel": return <AngelDashboard />;
+    case "venture-capital": return <VCDashboard />;
+    case "bank": return <BankDashboard />;
+    case "nbfc": return <NBFCDashboard />;
+    case "family-office": return <FamilyOfficeDashboard />;
+    case "corporate-venture": return <CVCDashboard />;
+    default: return <InvestorDashboard />;
+  }
 }
 
 function InvestorDashboard() {
@@ -622,12 +637,23 @@ function InvestorDashboard() {
             <div>
               <div className="text-sm font-medium text-white/70 mb-1">AI Weekly Digest — March 5, 2026</div>
               <h2 className="text-xl font-bold mb-2">
-                Good morning, {user?.firstName || "Investor"}! Here's your deal flow summary.
+                Good morning, {user?.firstName || "Investor"}!{" "}
+                {user?.investorType === 'angel' && "Here's your angel deal flow summary."}
+                {user?.investorType === 'venture-capital' && "Here's your VC pipeline summary."}
+                {user?.investorType === 'bank' && "Here's your lending opportunities summary."}
+                {user?.investorType === 'nbfc' && "Here's your NBFC funding requests summary."}
+                {user?.investorType === 'family-office' && "Here's your curated deal flow summary."}
+                {user?.investorType === 'corporate-venture' && "Here's your strategic innovation summary."}
+                {!user?.investorType && "Here's your deal flow summary."}
               </h2>
               <p className="text-white/80 text-sm max-w-2xl">
-                <strong>12 new startups</strong> match your thesis in AI/ML and FinTech. 
-                <strong> NeuralScale AI</strong> is trending with 94% match score — currently raising $8M Series A. 
-                <strong> 5 warm introductions</strong> are waiting for your response. The AI sector saw <strong>+28% deal activity</strong> this week.
+                {(user?.investorType === 'bank' || user?.investorType === 'nbfc') ? (
+                  <><strong>8 new startups</strong> match your lending criteria in FinTech and SaaS. <strong>NeuralScale AI</strong> is seeking $5M debt financing. <strong>3 credit assessments</strong> are pending your review. Startup loan requests rose <strong>+22%</strong> this week.</>
+                ) : user?.investorType === 'corporate-venture' ? (
+                  <><strong>7 strategic startups</strong> align with your innovation focus in AI/ML. <strong>NeuralScale AI</strong> is open to corporate partnerships — 94% strategic fit. <strong>4 partnership intros</strong> are waiting. The AI sector saw <strong>+28% deal activity</strong> this week.</>
+                ) : (
+                  <><strong>12 new startups</strong> match your thesis in AI/ML and FinTech. <strong>NeuralScale AI</strong> is trending with 94% match score — currently raising $8M Series A. <strong>5 warm introductions</strong> are waiting for your response. The AI sector saw <strong>+28% deal activity</strong> this week.</>
+                )}
               </p>
               <div className="flex gap-3 mt-4">
                 <Button

@@ -34,7 +34,8 @@ export function LoginPage() {
     setTimeout(() => {
       setLoading(false);
       login(email, password);
-      navigate(onboardingCompleted ? "/dashboard" : "/onboarding");
+      // Always go to /dashboard — ProtectedRoute redirects to /onboarding if not yet completed
+      navigate("/dashboard");
     }, 800);
   };
 

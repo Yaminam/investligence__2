@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
+import { InvestorType } from '../lib/investorTypes';
 
 export interface AuthUser {
   email: string;
@@ -6,6 +7,8 @@ export interface AuthUser {
   lastName: string;
   company: string;
   role: 'investor' | 'founder';
+  investorType?: InvestorType; // Only for investors
+  onboardingData?: Record<string, any>; // Store onboarding responses
 }
 
 interface AuthContextType {
@@ -14,7 +17,7 @@ interface AuthContextType {
   user: AuthUser | null;
   login: (email: string, password: string) => void;
   register: (user: AuthUser, password: string) => void;
-  completeOnboarding: (role?: 'investor' | 'founder') => void;
+  completeOnboarding: (role?: 'investor' | 'founder', investorType?: InvestorType, onboardingData?: Record<string, any>) => void;
   logout: () => void;
 }
 
@@ -26,6 +29,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   });
 
   const [onboardingCompleted, setOnboardingCompleted] = useState(() => {
+    // Only trust the flag if auth + user data are also present (prevents stale localStorage)
+    const hasAuth = localStorage.getItem('isAuthenticated') === 'true';
+    const hasUser = !!localStorage.getItem('authUser');
+    if (!hasAuth || !hasUser) {
+      localStorage.removeItem('onboardingCompleted');
+      return false;
+    }
     return localStorage.getItem('onboardingCompleted') === 'true';
   });
 
@@ -49,16 +59,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = (newUser: AuthUser, _password: string) => {
     setIsAuthenticated(true);
+    setOnboardingCompleted(false);
     setUser(newUser);
     localStorage.setItem('isAuthenticated', 'true');
+    localStorage.removeItem('onboardingCompleted');
     localStorage.setItem('authUser', JSON.stringify(newUser));
   };
 
-  const completeOnboarding = (role: 'investor' | 'founder' = 'investor') => {
+  const completeOnboarding = (role: 'investor' | 'founder' = 'investor', investorType?: InvestorType, onboardingData?: Record<string, any>) => {
     setOnboardingCompleted(true);
     localStorage.setItem('onboardingCompleted', 'true');
     if (user) {
-      const updated = { ...user, role };
+      const updated: AuthUser = { ...user, role };
+      if (role === 'investor' && investorType) {
+        updated.investorType = investorType;
+      }
+      if (onboardingData) {
+        updated.onboardingData = onboardingData;
+      }
       setUser(updated);
       localStorage.setItem('authUser', JSON.stringify(updated));
     }
