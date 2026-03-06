@@ -1,11 +1,20 @@
 ﻿import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "../../components/ui/dialog";
 import {
   ArrowUp, ArrowDown, TrendingUp, Sparkles, BriefcaseBusiness,
   GitMerge, Eye, Rocket, DollarSign, Users, Clock,
   ChevronRight, CheckCircle, Shield, Award, X, FileText,
-  Send, Target, BarChart2, AlertCircle, Zap
+  Send, Target, BarChart2, AlertCircle, Zap, Share2, Download, Mail
 } from "lucide-react";
 import { useState } from "react";
 import { useTheme } from "../../context/ThemeContext";
@@ -15,6 +24,7 @@ import {
   Tooltip, ResponsiveContainer, Cell
 } from "recharts";
 import { useAuth } from "../../context/AuthContext";
+import { toast } from "sonner";
 
 const kpiData = [
   {
@@ -239,14 +249,52 @@ const applicationChecklist = [
 
 function FounderDashboard() {
   const [tipVisible, setTipVisible] = useState(true);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [emailShare, setEmailShare] = useState("");
   const { theme } = useTheme();
   const { user } = useAuth();
   const navigate = useNavigate();
   const chartGrid = theme === "dark" ? "#334155" : "#e5e7eb";
   const chartAxis = theme === "dark" ? "#94a3b8" : "#6b7280";
 
+  const handleExportPDF = () => {
+    toast.success("Profile exported as PDF");
+    setShareDialogOpen(false);
+  };
+
+  const handleExportCSV = () => {
+    toast.success("Data exported as CSV");
+    setShareDialogOpen(false);
+  };
+
+  const handleShareEmail = () => {
+    if (!emailShare.trim()) {
+      toast.error("Please enter an email address");
+      return;
+    }
+    toast.success(`Profile shared with ${emailShare}`);
+    setEmailShare("");
+    setShareDialogOpen(false);
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(`https://investligence.com/founder/${user?.id || "profile"}`);
+    toast.success("Profile link copied to clipboard");
+  };
+
   return (
     <div className="space-y-8">
+      {/* Share & Export Button */}
+      <div className="flex justify-end">
+        <Button
+          onClick={() => setShareDialogOpen(true)}
+          variant="outline"
+          className="gap-2 border-gray-200 dark:border-slate-700"
+        >
+          <Share2 className="h-4 w-4" /> Share & Export
+        </Button>
+      </div>
+
       {/* Founder Tip Banner */}
       {tipVisible && (
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-violet-600 via-indigo-600 to-blue-600 p-6 text-white shadow-xl">
@@ -435,6 +483,67 @@ function FounderDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Share & Export Dialog - Founder */}
+      <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Share & Export Profile</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-3">
+              <h3 className="font-semibold text-sm">Export Options</h3>
+              <Button
+                onClick={handleExportPDF}
+                variant="outline"
+                className="w-full justify-start gap-2"
+              >
+                <Download className="h-4 w-4" /> Export as PDF
+              </Button>
+              <Button
+                onClick={handleExportCSV}
+                variant="outline"
+                className="w-full justify-start gap-2"
+              >
+                <Download className="h-4 w-4" /> Export Metrics as CSV
+              </Button>
+            </div>
+
+            <div className="border-t pt-4 space-y-3">
+              <h3 className="font-semibold text-sm">Share Profile</h3>
+              <Button
+                onClick={handleCopyLink}
+                variant="outline"
+                className="w-full justify-start gap-2"
+              >
+                <Share2 className="h-4 w-4" /> Copy Profile Link
+              </Button>
+            </div>
+
+            <div className="border-t pt-4 space-y-2">
+              <Label className="text-sm font-semibold">Share via Email</Label>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="investor@example.com"
+                  value={emailShare}
+                  onChange={(e) => setEmailShare(e.target.value)}
+                />
+                <Button
+                  onClick={handleShareEmail}
+                  className="bg-indigo-600 hover:bg-indigo-700"
+                >
+                  <Mail className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShareDialogOpen(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
@@ -447,14 +556,52 @@ export function DashboardHome() {
 
 function InvestorDashboard() {
   const [briefingVisible, setBriefingVisible] = useState(true);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [emailShare, setEmailShare] = useState("");
   const { theme } = useTheme();
   const { user } = useAuth();
   const navigate = useNavigate();
   const chartGrid = theme === "dark" ? "#334155" : "#e5e7eb";
   const chartAxis = theme === "dark" ? "#94a3b8" : "#6b7280";
 
+  const handleExportPDF = () => {
+    toast.success("Portfolio exported as PDF");
+    setShareDialogOpen(false);
+  };
+
+  const handleExportCSV = () => {
+    toast.success("Investment data exported as CSV");
+    setShareDialogOpen(false);
+  };
+
+  const handleShareEmail = () => {
+    if (!emailShare.trim()) {
+      toast.error("Please enter an email address");
+      return;
+    }
+    toast.success(`Profile shared with ${emailShare}`);
+    setEmailShare("");
+    setShareDialogOpen(false);
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(`https://investligence.com/investor/${user?.id || "profile"}`);
+    toast.success("Profile link copied to clipboard");
+  };
+
   return (
     <div className="space-y-8">
+      {/* Share & Export Button */}
+      <div className="flex justify-end">
+        <Button
+          onClick={() => setShareDialogOpen(true)}
+          variant="outline"
+          className="gap-2 border-gray-200 dark:border-slate-700"
+        >
+          <Share2 className="h-4 w-4" /> Share & Export
+        </Button>
+      </div>
+
       {/* AI Briefing Banner */}
       {briefingVisible && (
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 p-6 text-white shadow-xl">
@@ -789,6 +936,67 @@ function InvestorDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Share & Export Dialog - Investor */}
+      <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Share & Export Profile</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-3">
+              <h3 className="font-semibold text-sm">Export Options</h3>
+              <Button
+                onClick={handleExportPDF}
+                variant="outline"
+                className="w-full justify-start gap-2"
+              >
+                <Download className="h-4 w-4" /> Export as PDF
+              </Button>
+              <Button
+                onClick={handleExportCSV}
+                variant="outline"
+                className="w-full justify-start gap-2"
+              >
+                <Download className="h-4 w-4" /> Export Portfolio as CSV
+              </Button>
+            </div>
+
+            <div className="border-t pt-4 space-y-3">
+              <h3 className="font-semibold text-sm">Share Profile</h3>
+              <Button
+                onClick={handleCopyLink}
+                variant="outline"
+                className="w-full justify-start gap-2"
+              >
+                <Share2 className="h-4 w-4" /> Copy Profile Link
+              </Button>
+            </div>
+
+            <div className="border-t pt-4 space-y-2">
+              <Label className="text-sm font-semibold">Share via Email</Label>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="founder@example.com"
+                  value={emailShare}
+                  onChange={(e) => setEmailShare(e.target.value)}
+                />
+                <Button
+                  onClick={handleShareEmail}
+                  className="bg-indigo-600 hover:bg-indigo-700"
+                >
+                  <Mail className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShareDialogOpen(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
