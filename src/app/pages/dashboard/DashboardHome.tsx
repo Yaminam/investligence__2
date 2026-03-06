@@ -282,7 +282,7 @@ function FounderDashboard() {
   };
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(`https://investligence.com/founder/${user?.id || "profile"}`);
+    navigator.clipboard.writeText(`https://capitalconnect.ai/founder/${user?.id || "profile"}`);
     toast.success("Profile link copied to clipboard");
   };
 

@@ -28,6 +28,7 @@ import {
 import { useState, useRef, useEffect } from "react";
 import { Toaster } from "../components/ui/sonner";
 import { Input } from "../components/ui/input";
+import { CapitalConnectLogo } from "../components/CapitalConnectLogo";
 import { useAuth } from "../context/AuthContext";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { NotificationCenter } from "../components/NotificationCenter";
@@ -128,11 +129,9 @@ export function DashboardLayout() {
     <div className={`flex grow flex-col gap-y-5 overflow-y-auto px-6 py-4 ${mobile ? "bg-white dark:bg-slate-950" : "bg-white dark:bg-slate-950 border-r border-gray-200 dark:border-slate-800"}`}>
       <div className="flex h-16 shrink-0 items-center">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-xl flex items-center justify-center shadow-lg">
-            <TrendingUp className="w-5 h-5 text-white" />
-          </div>
+          <CapitalConnectLogo size={36} />
           <div>
-            <div className="text-lg font-semibold text-gray-900 dark:text-white">InvestLigence</div>
+            <div className="text-lg font-semibold text-gray-900 dark:text-white">Capital Connect</div>
             <div className="text-xs text-indigo-500 dark:text-indigo-400 font-medium">
               {isFounder ? "Founder Portal" : "Deal Flow Intelligence"}
             </div>

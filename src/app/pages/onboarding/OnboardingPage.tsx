@@ -4,6 +4,7 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Badge } from "../../components/ui/badge";
+import { CapitalConnectLogoFull } from "../../components/CapitalConnectLogo";
 import {
   Check, Building2, User, Target, DollarSign, Globe, Sparkles,
   PartyPopper, TrendingUp, Rocket, BriefcaseBusiness, Users,
@@ -310,7 +311,7 @@ export function OnboardingPage() {
             <div className="w-16 h-16 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl">
               <TrendingUp className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Welcome to InvestLigence</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Welcome to Capital Connect</h2>
             <p className="text-gray-500 dark:text-gray-400 text-sm">The AI-powered deal flow platform. How are you joining?</p>
           </div>
           <div className="grid grid-cols-1 gap-3">
@@ -661,11 +662,8 @@ export function OnboardingPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-violet-50/20 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950 flex items-center justify-center p-4">
       <div className="w-full max-w-xl">
         {/* Top wordmark */}
-        <div className="flex items-center justify-center gap-2.5 mb-8">
-          <div className="w-8 h-8 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-lg flex items-center justify-center">
-            <TrendingUp className="w-4 h-4 text-white" />
-          </div>
-          <span className="text-lg font-semibold text-gray-900 dark:text-white">InvestLigence</span>
+        <div className="flex items-center justify-center mb-8">
+          <CapitalConnectLogoFull size={36} textSize="text-xl" />
         </div>
 
         {/* Progress indicator (only when past role selection) */}

@@ -304,7 +304,7 @@ export default function AIChatPage() {
             className="hidden sm:flex gap-1 border-indigo-200 text-indigo-600 dark:border-indigo-800 dark:text-indigo-400"
           >
             <Sparkles className="w-3 h-3" />
-            InvestLigence AI
+            Capital Connect AI
           </Badge>
           <Button
             variant="ghost"
